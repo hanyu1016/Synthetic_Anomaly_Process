@@ -61,29 +61,6 @@ augmenters = [
 aug_ind = np.random.choice(np.arange(len(augmenters)), 3, replace=False)
 aug = iaa.Sequential([
     augmenters[aug_ind[0]],
-    augmenters[aug_ind[1]],
-    augmenters[aug_ind[2]]
-])
-structure_source_img = aug(image=image_np)
-plt.imshow(structure_source_img)
-plt.show()
-
-augmenters = [
-    iaa.GammaContrast((0.5,2.0),per_channel=True),
-    iaa.MultiplyAndAddToBrightness(mul=(0.8,1.2),add=(-30,30)),
-    iaa.pillike.EnhanceSharpness(),
-    iaa.AddToHueAndSaturation((-50,50),per_channel=True),
-    iaa.Solarize(0.5, threshold=(32,128)),
-    iaa.Posterize(),
-    iaa.Invert(),
-    iaa.pillike.Autocontrast(),
-    iaa.pillike.Equalize(),
-    iaa.Affine(rotate=(-45, 45))
-]
-
-aug_ind = np.random.choice(np.arange(len(augmenters)), 3, replace=False)
-aug = iaa.Sequential([
-    augmenters[aug_ind[0]],
     augmenters[1],
     augmenters[aug_ind[2]]
 ])
