@@ -11,7 +11,6 @@ import imgaug.augmenters as iaa
 import re
 from torch.utils.data import Dataset
 from einops import rearrange
-from perlin_noise import PerlinNoise;
 from perlin_numpy import (
     generate_fractal_noise_2d, generate_fractal_noise_3d,
     generate_perlin_noise_2d, generate_perlin_noise_3d
@@ -36,7 +35,7 @@ def set_random_seed(seed=1):
 set_random_seed(1)
 
 img = Image.open("C:/Users/MVCLAB/Desktop/tools/pcb4/0047.JPG")
-resize_image = transforms.Resize([256,256])
+resize_image = transforms.Resize([448,448])
 img = resize_image(img)
 image_np = np.array(img)
 img_gray = cv2.cvtColor(image_np, cv2.COLOR_RGB2GRAY)
@@ -96,26 +95,6 @@ ax[1].set_title('Foreground')
 plt.show()
 
 print(structure_source_img.shape)
-
-structure_source_img = rearrange(
-    tensor  = structure_source_img, 
-    pattern = '(h gh) (w gw) c -> (h w) gw gh c',
-    gw      = 32, 
-    gh      = 32
-)
-disordered_idx = np.arange(structure_source_img.shape[0])
-np.random.shuffle(disordered_idx)
-
-structure_source_img = rearrange(
-    tensor  = structure_source_img[disordered_idx], 
-    pattern = '(h w) gw gh c -> (h gh) (w gw) c',
-    h       = 8,
-    w       = 8
-).astype(np.float32)
-
-plt.imshow(structure_source_img.astype(np.uint8))
-plt.show()
-
 factor = np.random.uniform(
     0.15, 
     1, 
@@ -134,7 +113,7 @@ min_perlin_scale = 0
 perlin_scalex = 2 ** (torch.randint(min_perlin_scale, perlin_scale, (1,)).numpy()[0])
 perlin_scaley = 2 ** (torch.randint(min_perlin_scale, perlin_scale, (1,)).numpy()[0])
 
-noise = generate_perlin_noise_2d((256, 256), (perlin_scalex, perlin_scaley))
+noise = generate_perlin_noise_2d((448, 448), (perlin_scalex, perlin_scaley))
 plt.imshow(noise, cmap='gray', interpolation='lanczos')
 plt.show() 
 
@@ -160,7 +139,7 @@ texture_source_img = cv2.imread("D:/Downloads/dtd/images/banded/banded_0077.jpg"
 texture_source_img = cv2.cvtColor(texture_source_img, cv2.COLOR_BGR2RGB)
 texture_source_img = cv2.resize(
     texture_source_img, 
-    dsize=(256, 256)
+    dsize=(448, 448)
 ).astype(np.float32)
 plt.imshow(texture_source_img.astype(np.uint8))
 plt.show()
@@ -173,9 +152,6 @@ ax[0].set_title('texture')
 ax[1].imshow(structure_source_img.astype(np.uint8))
 ax[1].set_title('structure')
 plt.show()
-
-texture_anomaly = ((- mask + 1) * img) + texture_source_img
-structure_anomaly = ((- mask + 1) * img) + structure_source_img
 
 texture_anomaly = ((- mask + 1) * img) + texture_source_img
 structure_anomaly = ((- mask + 1) * img) + structure_source_img
