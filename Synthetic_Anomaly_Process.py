@@ -71,8 +71,8 @@ plt.show()
 structure_source_img = rearrange(
     tensor  = structure_source_img, 
     pattern = '(h gh) (w gw) c -> (h w) gw gh c',
-    gw      = 32, 
-    gh      = 32
+    gw      = 56, 
+    gh      = 56
 )
 disordered_idx = np.arange(structure_source_img.shape[0])
 np.random.shuffle(disordered_idx)
@@ -160,4 +160,11 @@ ax[0].imshow(texture_anomaly.astype(np.uint8))
 ax[0].set_title('texture anomaly')
 ax[1].imshow(structure_anomaly.astype(np.uint8))
 ax[1].set_title('structure anomaly')
-plt.show()
+
+print(type(texture_anomaly))
+print(type(structure_anomaly))
+print("------------------------------------------------------")
+texture_image = Image.fromarray(texture_anomaly, mode = 'RGB')
+structure_image = Image.fromarray(structure_anomaly, mode = 'RGB')
+print(type(texture_image))
+print(type(structure_image))
